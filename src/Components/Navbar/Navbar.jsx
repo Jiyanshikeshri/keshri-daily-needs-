@@ -1,0 +1,48 @@
+import React, { useContext } from "react";
+import './Navbar.css'
+import logo from '../Assets/keshri daily needs logo.jpg'
+import cart_icon from '../Assets/cart_icon.png'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ShopContext } from "../../Context/ShopContext";
+import nav_dropdown from '../Assets/nav_dropdown.png'
+import { useRef } from "react";
+
+const Navbar = () => {
+
+    const[menu, setMenu] = useState("shop");
+    const {getTotalCartItems} = useContext(ShopContext)
+    const menuRef = useRef();
+
+    const dropdown_toggle = (e) =>{
+        menuRef.current.classList.toggle('nav-menu-visible');
+        e.target.classList.toggle('open');
+    }
+
+    return(
+        <div className="navbar">
+            <div className="nav-logo">
+                <img src={logo} alt="" />
+                <p>KESHRI DAILY NEEDS</p>
+            </div>
+            <img className="nav-dropdown" onClick={dropdown_toggle} src={nav_dropdown} alt="" />
+            <ul ref={menuRef} className="nav-menu">
+            <li onClick={()=>{setMenu("Shop")}}><Link style={{textDecoration:'none',color:'#626262'}} to='/'>Shop</Link>{menu==="Shop"?<hr/>:<></>}</li>
+                <li onClick={()=>{setMenu("Fruits & Vegetables")}}><Link style={{textDecoration:'none', color:'#626262'}} to='/Fruits&Vegetables'>Fruits & Vegetables</Link> {menu==="Fruits & Vegetables"?<hr/>:<></>}</li>
+                <li onClick={()=>{setMenu("Dairy & Eggs")}}><Link style={{textDecoration:'none', color:'#626262'}} to='/Dairy&Eggs'>Dairy & Eggs</Link> {menu==="Dairy & Eggs"?<hr/>:<></>}</li>
+                <li onClick={()=>{setMenu("Bakery & Bread")}}><Link style={{textDecoration:'none', color:'#626262'}} to='/Bakery&Bread'>Bakery & Bread</Link> {menu==="Bakery & Bread"?<hr/>:<></>}</li>
+                <li onClick={()=>{setMenu("Beverages")}}><Link style={{textDecoration:'none', color:'#626262'}} to='/Beverages'>Beverages </Link> {menu==="Beverages"?<hr/>:<></>}</li>
+                <li onClick={()=>{setMenu("Pantry Staples")}}><Link style={{textDecoration:'none', color:'#626262'}} to='/PantryStaples'>Pantry Staples</Link> {menu==="Pantry Staples"?<hr/>:<></>}</li>
+            </ul>
+            <div className="nav-login-cart">
+                {localStorage.getItem('auth-token')
+                ?<button onClick={()=>{localStorage.removeItem('auth-token');window.location.replace('/')}}>Logout</button>
+                :<Link to='/login'><button>Login</button></Link>}
+                <Link to='/cart'><img src={cart_icon} alt="" /></Link>
+                <div className="nav-cart-count">{getTotalCartItems()}</div>
+            </div>
+        </div>
+    )
+}
+
+export default Navbar
